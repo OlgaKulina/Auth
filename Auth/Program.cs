@@ -32,12 +32,12 @@ namespace Auth
                 Console.Read();
             } while (!password.Equals(passRep));                       
 
-            AddUser(name, password);                  
+            AddLogin(name, password);                  
 
             Console.Read();
         }
 
-        private static void AddUser(string name, string password)
+        private static void AddLogin(string login)
         {
             // название процедуры
             string sqlExpression = "isLogin";
@@ -48,14 +48,36 @@ namespace Auth
                 SqlCommand command = new SqlCommand(sqlExpression, connection);
                 // указываем, что команда представляет хранимую процедуру
                 command.CommandType = System.Data.CommandType.StoredProcedure;
-                // параметр для ввода имени
-                SqlParameter nameParam = new SqlParameter
+                // параметр для ввода логина
+                SqlParameter logParam = new SqlParameter
                 {
                     ParameterName = "@name",
-                    Value = name
+                    Value = login
                 };
                 // добавляем параметр
-                command.Parameters.Add(nameParam);
+                command.Parameters.Add(logParam);
+
+                var result = command.ExecuteScalar();
+                // если нам не надо возвращать id
+                //var result = command.ExecuteNonQuery();
+
+                Console.WriteLine("Id добавленного объекта: {0}", result);
+            }
+        }
+
+
+        private static void AddPassword(string password)
+        {
+            // название процедуры
+            string sqlExpression = "isPass";
+
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                connection.Open();
+                SqlCommand command = new SqlCommand(sqlExpression, connection);
+                // указываем, что команда представляет хранимую процедуру
+                command.CommandType = System.Data.CommandType.StoredProcedure;                
+                
                 // параметр для ввода пароля
                 SqlParameter passParam = new SqlParameter
                 {
@@ -71,6 +93,7 @@ namespace Auth
                 Console.WriteLine("Id добавленного объекта: {0}", result);
             }
         }
+
 
         public static string MD5Hash(string input)
         {
@@ -101,43 +124,7 @@ namespace Auth
                 return builder.ToString();
             }
         }
-        //private static void AddUser(string name, int age)
-        //{
-        //    // название процедуры
-        //    string sqlExpression = "sp_InsertUser";
-
-        //    using (SqlConnection connection = new SqlConnection(connectionString))
-        //    {
-        //        connection.Open();
-        //        SqlCommand command = new SqlCommand(sqlExpression, connection);
-        //        // указываем, что команда представляет хранимую процедуру
-        //        command.CommandType = System.Data.CommandType.StoredProcedure;
-        //        // параметр для ввода имени
-        //        SqlParameter nameParam = new SqlParameter
-        //        {
-        //            ParameterName = "@name",
-        //            Value = name
-        //        };
-        //        // добавляем параметр
-        //        command.Parameters.Add(nameParam);
-        //        // параметр для ввода возраста
-        //        SqlParameter ageParam = new SqlParameter
-        //        {
-        //            ParameterName = "@age",
-        //            Value = age
-        //        };
-        //        command.Parameters.Add(ageParam);
-
-        //        var result = command.ExecuteScalar();
-        //        // если нам не надо возвращать id
-        //        //var result = command.ExecuteNonQuery();
-
-        //        Console.WriteLine("Id добавленного объекта: {0}", result);
-        //    }
-        //}
-
-
-        // вывод всех пользователей
+       
 
     }
     }
