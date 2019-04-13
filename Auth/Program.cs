@@ -20,9 +20,19 @@ namespace Auth
 
             Console.Write("Enter password:");
             string password = Console.ReadLine();
+            string passRep = String.Empty;
 
-            AddUser(name, password);
-            Console.WriteLine();           
+            do
+            {
+                Console.Clear();
+                Console.WriteLine("Повторите пароль");
+                passRep = Console.ReadLine();
+
+                Console.WriteLine($"Pass\t\t{MD5Hash(ComputeSha256Hash(password + "vasya"))}\nPass rep\t{passRep}");
+                Console.Read();
+            } while (!password.Equals(passRep));                       
+
+            AddUser(name, password);                  
 
             Console.Read();
         }
@@ -59,6 +69,36 @@ namespace Auth
                 //var result = command.ExecuteNonQuery();
 
                 Console.WriteLine("Id добавленного объекта: {0}", result);
+            }
+        }
+
+        public static string MD5Hash(string input)
+        {
+            StringBuilder hash = new StringBuilder();
+            MD5CryptoServiceProvider md5provider = new MD5CryptoServiceProvider();
+            byte[] bytes = md5provider.ComputeHash(new UTF8Encoding().GetBytes(input));
+
+            for (int i = 0; i < bytes.Length; i++)
+            {
+                hash.Append(bytes[i].ToString("x2"));
+            }
+            return hash.ToString();
+        }
+        static string ComputeSha256Hash(string rawData)
+        {
+            // Create a SHA256   
+            using (SHA256 sha256Hash = SHA256.Create())
+            {
+                // ComputeHash - returns byte array  
+                byte[] bytes = sha256Hash.ComputeHash(Encoding.UTF8.GetBytes(rawData));
+
+                // Convert byte array to a string   
+                StringBuilder builder = new StringBuilder();
+                for (int i = 0; i < bytes.Length; i++)
+                {
+                    builder.Append(bytes[i].ToString("x2"));
+                }
+                return builder.ToString();
             }
         }
         //private static void AddUser(string name, int age)
@@ -98,8 +138,8 @@ namespace Auth
 
 
         // вывод всех пользователей
-        
-        }
+
+    }
     }
 
 
