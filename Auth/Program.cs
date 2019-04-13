@@ -32,7 +32,7 @@ namespace Auth
                 Console.Read();
             } while (!password.Equals(passRep));                       
 
-            AddLogin(name, password);                  
+            AddLogin(login);                  
 
             Console.Read();
         }
